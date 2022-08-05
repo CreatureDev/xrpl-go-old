@@ -31,6 +31,17 @@ func (c *Client) Request(method string, args types.XRPLParams) (types.XRPLRespon
 	defer resp.Body.Close()
 	dat := make([]byte, resp.ContentLength)
 	_, _ = resp.Body.Read(dat)
+
+	// error check
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf(resp.Status)
+	}
+	var xrpErr types.Error
+	decode(dat, xrpErr)
+	if xrpErr.Error != "" {
+		return nil, fmt.Errorf(xrpErr.Error)
+	}
+
 	ret := args.ResponseContainer()
 	decode(dat, ret)
 	return ret, nil
