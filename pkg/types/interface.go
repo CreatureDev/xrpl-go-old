@@ -7,7 +7,7 @@ type XRPLParams interface {
 	// ResponseContainer returns a new struct to store the response
 	ResponseContainer() XRPLResponse
 	// Valid confirms that all fields are in appropriate format
-	Valid() bool
+	Valid() error
 }
 
 type XRPLResponse interface {

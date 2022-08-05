@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	"math/big"
 )
 
@@ -20,11 +21,11 @@ const (
 type Account string
 
 // TODO Validate account string format
-func (a Account) Valid() bool {
+func (a Account) Valid() error {
 	if a == "" {
-		return false
+		return fmt.Errorf("Account argument is required")
 	}
-	return true
+	return nil
 }
 
 type BaseAccountParams struct {
@@ -33,18 +34,21 @@ type BaseAccountParams struct {
 	LedgerIndex interface{} `json:"ledger_index,omitempty"`
 }
 
-func (b BaseAccountParams) Valid() bool {
+func (b BaseAccountParams) Valid() error {
+	if err := b.Account.Valid(); err != nil {
+		return err
+	}
 	if b.LedgerIndex == nil {
-		return true
+		return nil
 	}
 	switch b.LedgerIndex.(type) {
 	// Possible TODO ensure non-negative number for signed ints
 	case int, uint, int32, uint32, int64, uint64, big.Int:
-		return true
+		return nil
 	case string:
-		return true
+		return nil
 	}
-	return false
+	return fmt.Errorf("Ledger Index provided in invalid format")
 }
 
 // LedgerIndex parameters are expected as a string or integer type
@@ -111,7 +115,7 @@ type AccountCurrenciesResponse struct {
 
 type AccountInfoParams struct {
 	BaseAccountParams
-	Queue      bool `json:"queue, omitempty"`
+	Queue      bool `json:"queue,omitempty"`
 	SignerList bool `json:"signer_list,omitempty"`
 	Strict     bool `json:"strict,omitempty"`
 }

@@ -1,9 +1,6 @@
 package xrpl
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/CreatureDev/xrpl-go/internal/http"
 	"github.com/CreatureDev/xrpl-go/pkg/types"
 )
@@ -20,15 +17,13 @@ func CreateConnection(address string) *Connection {
 
 // Submit is a generic function to pass requests to connected XRPL Node
 // Response will be in the format associated with request parameters
-func (c *Connection) Submit(p types.XRPLParams) types.XRPLResponse {
-	if !p.Valid() {
-		fmt.Fprintln(os.Stderr, "Request improperly formatted")
-		return nil
+func (c *Connection) Submit(p types.XRPLParams) (types.XRPLResponse, error) {
+	if err := p.Valid(); err != nil {
+		return nil, err
 	}
 	resp, err := c.c.Request(p.MethodString(), p)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		return nil
+		return nil, err
 	}
-	return resp
+	return resp, nil
 }
