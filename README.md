@@ -6,6 +6,6 @@ I would not recommend using this library except for testnet and devnet developme
 
 Currently supports
   - Clients
-    Synchronous HTTP client
+     - Synchronous HTTP client
   - API
-    Account requests
+     - Account requests
