@@ -88,7 +88,7 @@ type Channel struct {
 	PublicKeyHex       string `json:"public_key_hex,omitempty"`
 	Expiration         uint64 `json:"expiration,omitempty"`
 	CancelAfter        uint64 `json:"cancel_after,omitempty"`
-	SourceTag          uint64 `json:"source_tage,omitempty"`
+	SourceTag          uint64 `json:"source_tag,omitempty"`
 	DestinationTag     uint64 `json:"destination_tag,omitempty"`
 }
 
