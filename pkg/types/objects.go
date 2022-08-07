@@ -140,23 +140,3 @@ type Memo struct {
 type MemoWrapper struct {
 	Memo Memo `json:"Memo"`
 }
-
-type BaseTx struct {
-	Account            string        `json:"Account"`
-	TransactionType    string        `json:"TransactionType"`
-	Fee                string        `json:"Fee"`
-	Sequence           uint64        `json:"Sequence"`
-	AccountTxnID       string        `json:"AccountTxnID"`
-	Flags              TxFlags       `json:"Flags"`
-	LastLedgerSequence uint64        `json:"LastLedgerSequence"`
-	Memos              []MemoWrapper `json:"Memos"`
-	// TODO verify this field is not wrapped like Memo field
-	Signers []SignerEntry `json:"Signers"`
-}
-
-func (BaseTx) IsTx() {
-}
-
-type Tx interface {
-	IsTx()
-}

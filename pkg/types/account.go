@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/big"
 )
@@ -21,7 +22,7 @@ const (
 type Account string
 
 // TODO Validate account string format
-func (a Account) Valid() error {
+func (a Account) Validate() error {
 	if a == "" {
 		return fmt.Errorf("Account argument is required")
 	}
@@ -34,8 +35,8 @@ type BaseAccountParams struct {
 	LedgerIndex interface{} `json:"ledger_index,omitempty"`
 }
 
-func (b BaseAccountParams) Valid() error {
-	if err := b.Account.Valid(); err != nil {
+func (b BaseAccountParams) Validate() error {
+	if err := b.Account.Validate(); err != nil {
 		return err
 	}
 	if b.LedgerIndex == nil {
@@ -63,8 +64,10 @@ func (*AccountChannelsParams) MethodString() string {
 	return accountChannelsReq
 }
 
-func (*AccountChannelsParams) ResponseContainer() XRPLResponse {
-	return &AccountChannelsResponse{}
+func (*AccountChannelsParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	ret := &AccountChannelsResponse{}
+	json.Unmarshal(res, ret)
+	return ret
 }
 
 type AccountChannelsResponse struct {
@@ -101,8 +104,10 @@ func (*AccountCurrenciesParams) MethodString() string {
 	return accountCurrenciesReq
 }
 
-func (*AccountCurrenciesParams) ResponseContainer() XRPLResponse {
-	return &AccountCurrenciesResponse{}
+func (*AccountCurrenciesParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	ret := &AccountCurrenciesResponse{}
+	json.Unmarshal(res, ret)
+	return ret
 }
 
 type AccountCurrenciesResponse struct {
@@ -124,8 +129,10 @@ func (*AccountInfoParams) MethodString() string {
 	return accountInfoReq
 }
 
-func (*AccountInfoParams) ResponseContainer() XRPLResponse {
-	return &AccountInfoResponse{}
+func (*AccountInfoParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	ret := &AccountInfoResponse{}
+	json.Unmarshal(res, ret)
+	return ret
 }
 
 type AccountInfoResponse struct {
@@ -175,8 +182,10 @@ func (*AccountLinesParams) MethodString() string {
 	return accountLinesReq
 }
 
-func (*AccountLinesParams) ResponseContainer() XRPLResponse {
-	return &AccountLinesResponse{}
+func (*AccountLinesParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	ret := &AccountLinesResponse{}
+	json.Unmarshal(res, ret)
+	return ret
 }
 
 type AccountLinesResponse struct {
@@ -214,8 +223,10 @@ func (*AccountNFTsParams) MethodString() string {
 	return accountNFTsReq
 }
 
-func (*AccountNFTsParams) ResponseContainer() XRPLResponse {
-	return &AccountNFTsResponse{}
+func (*AccountNFTsParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	ret := &AccountNFTsResponse{}
+	json.Unmarshal(res, ret)
+	return ret
 }
 
 type AccountNFTsResponse struct {
@@ -240,8 +251,10 @@ func (*AccountObjectsParams) MethodString() string {
 	return accountObjectsReq
 }
 
-func (*AccountObjectsParams) ResponseContainer() XRPLResponse {
-	return &AccountObjectsResponse{}
+func (*AccountObjectsParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	ret := &AccountObjectsResponse{}
+	json.Unmarshal(res, ret)
+	return ret
 }
 
 type AccountObjectsResponse struct {
@@ -266,8 +279,10 @@ func (*AccountOffersParams) MethodString() string {
 	return accountOffersReq
 }
 
-func (*AccountOffersParams) ResponseContainer() XRPLResponse {
-	return &AccountOffersResponse{}
+func (*AccountOffersParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	ret := &AccountOffersResponse{}
+	json.Unmarshal(res, ret)
+	return ret
 }
 
 type AccountOffersResponse struct {
@@ -302,8 +317,10 @@ func (*AccountTxParams) MethodString() string {
 	return accountTxReq
 }
 
-func (*AccountTxParams) ResponseContainer() XRPLResponse {
-	return &AccountTxResponse{}
+func (*AccountTxParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	ret := &AccountTxResponse{}
+	json.Unmarshal(res, ret)
+	return ret
 }
 
 type AccountTxResponse struct {
@@ -334,8 +351,10 @@ func (*GatewayBalancesParams) MethodString() string {
 	return gatewayBalancesReq
 }
 
-func (*GatewayBalancesParams) ResponseContainer() XRPLResponse {
-	return &GatewayBalancesResponse{}
+func (*GatewayBalancesParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	ret := &GatewayBalancesResponse{}
+	json.Unmarshal(res, ret)
+	return ret
 }
 
 type GatewayBalancesResponse struct {
@@ -360,8 +379,10 @@ func (*NorippleCheckParams) MethodString() string {
 	return norippleCheckReq
 }
 
-func (*NorippleCheckParams) ResponseContainer() XRPLResponse {
-	return &NorippleCheckResponse{}
+func (*NorippleCheckParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	ret := &NorippleCheckResponse{}
+	json.Unmarshal(res, ret)
+	return ret
 }
 
 type NorippleCheckResponse struct {

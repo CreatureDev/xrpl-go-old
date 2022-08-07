@@ -31,7 +31,7 @@ func (c *Connection) EnableValidation() {
 // Response will be in the format associated with request parameters
 func (c *Connection) Submit(p types.XRPLParams) (types.XRPLResponse, error) {
 	if !c.disableValidation {
-		if err := p.Valid(); err != nil {
+		if err := p.Validate(); err != nil {
 			return nil, err
 		}
 	}

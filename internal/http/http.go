@@ -37,13 +37,15 @@ func (c *Client) Request(method string, args types.XRPLParams) (types.XRPLRespon
 		return nil, fmt.Errorf(resp.Status)
 	}
 	var xrpErr types.Error
-	decode(dat, xrpErr)
+	res := &httpResponse{}
+	json.Unmarshal(dat, res)
+
+	json.Unmarshal(res.Result, &xrpErr)
 	if xrpErr.Error != "" {
 		return nil, fmt.Errorf(xrpErr.Error)
 	}
 
-	ret := args.ResponseContainer()
-	decode(dat, ret)
+	ret := args.DecodeResponse(res.Result)
 	return ret, nil
 }
 
@@ -55,10 +57,5 @@ func NewClient(addr string) *Client {
 }
 
 type httpResponse struct {
-	Result types.XRPLResponse `json:"result"`
-}
-
-func decode(d []byte, ret types.XRPLResponse) {
-	res := &httpResponse{ret}
-	json.Unmarshal(d, res)
+	Result json.RawMessage `json:"result"`
 }
