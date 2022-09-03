@@ -3,7 +3,6 @@ package wallet
 import (
 	"crypto"
 	"crypto/ed25519"
-	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 
@@ -18,18 +17,29 @@ type Wallet struct {
 }
 
 func EncodeAccount(key crypto.PublicKey) (api.Account, error) {
-	pubkey, ok := key.([]byte)
+	pubkey, ok := key.(ed25519.PublicKey)
 	if !ok || len(pubkey) != 32 {
 		return "", fmt.Errorf("Unable to encode publickey %v", key)
 	}
 	prefixkey := append([]byte{0xED}, pubkey...)
-	hash := sha256.Sum256(prefixkey)
-	acc := ripemd160.New().Sum(hash[:])
+	if len(prefixkey) != 33 {
+		return "", fmt.Errorf("pubkey incorrect size")
+	}
+	sha := crypto.SHA256.New()
+	_, _ = sha.Write(prefixkey)
+	hash := sha.Sum(nil)
+	ripe := ripemd160.New()
+	_, _ = ripe.Write(hash[:])
+	acc := ripe.Sum(nil)
 
 	account_base := append([]byte{0x00}, acc...)
 
-	hash = sha256.Sum256(account_base)
-	hash = sha256.Sum256(hash[:])
+	sha = crypto.SHA256.New()
+	_, _ = sha.Write(account_base)
+	hash = sha.Sum(nil)
+	sha = crypto.SHA256.New()
+	_, _ = sha.Write(hash[:])
+	hash = sha.Sum(nil)
 	checksum := hash[:4]
 
 	account := append(account_base, checksum...)
