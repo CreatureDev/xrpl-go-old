@@ -27,6 +27,16 @@ type Tx interface {
 	IsTx()
 }
 
+func ParseTx(msg json.RawMessage) Tx {
+	base := &BaseTx{}
+	json.Unmarshal(msg, base)
+	switch base.TransactionType {
+	// TODO
+
+	}
+	return base
+}
+
 type SubmitTxParams struct {
 	TxBlob   string `json:"tx_blob"`
 	FailHard bool   `json:"fail_hard,omitempty"`
@@ -42,15 +52,19 @@ func (*SubmitTxParams) MethodString() string {
 
 func (*SubmitTxParams) DecodeResponse(res json.RawMessage) XRPLResponse {
 	// TODO determine type of transaction and return appropriate data
+	ret := &SubmitTxResponse{}
+	json.Unmarshal(res, ret)
+	ret.Tx = ParseTx(ret.TxJson)
 	return &SubmitTxResponse{}
 }
 
 type SubmitTxResponse struct {
-	EngineResult             string `json:"engine_result"`
-	EngineResultCode         int    `json:"engine_result_code"`
-	EngineResultMessage      string `json:"engine_result_message"`
-	TxBlob                   string `json:"tx_blob"`
-	TxJson                   Tx     `json:"tx_json"`
+	EngineResult             string          `json:"engine_result"`
+	EngineResultCode         int             `json:"engine_result_code"`
+	EngineResultMessage      string          `json:"engine_result_message"`
+	TxBlob                   string          `json:"tx_blob"`
+	TxJson                   json.RawMessage `json:"tx_json"`
+	Tx                       Tx
 	Accepted                 bool   `json:"accepted"`
 	AccountSequenceAvailable uint64 `json:"account_sequence_available"`
 	AccountSequenceNext      uint64 `json:"account_sequence_next"`
@@ -77,13 +91,16 @@ func (*TxParams) MethodString() string {
 }
 
 func (t *TxParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	tx := ParseTx(res)
 	if t.Binary {
 		ret := &TxBinaryResponse{}
 		json.Unmarshal(res, ret)
+		ret.Tx = tx
 		return ret
 	}
 	ret := &TxResponse{}
 	json.Unmarshal(res, ret)
+	ret.Tx = tx
 	return ret
 }
 

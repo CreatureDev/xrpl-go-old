@@ -320,6 +320,9 @@ func (*AccountTxParams) MethodString() string {
 func (*AccountTxParams) DecodeResponse(res json.RawMessage) XRPLResponse {
 	ret := &AccountTxResponse{}
 	json.Unmarshal(res, ret)
+	for _, acctx := range ret.Transactions {
+		acctx.Tx = ParseTx(acctx.TxJson)
+	}
 	return ret
 }
 
@@ -336,9 +339,10 @@ type AccountTxResponse struct {
 type AccountTransaction struct {
 	LedgerIndex uint64          `json:"ledger_index"`
 	Meta        TransactionMeta `json:"meta"`
-	Tx          Tx              `json:"tx"`
-	TxBlob      string          `json:"tx_blob"`
-	Validated   bool            `json:"validated"`
+	TxJson      json.RawMessage `json:"tx"`
+	Tx          Tx
+	TxBlob      string `json:"tx_blob"`
+	Validated   bool   `json:"validated"`
 }
 
 type GatewayBalancesParams struct {
@@ -382,11 +386,15 @@ func (*NorippleCheckParams) MethodString() string {
 func (*NorippleCheckParams) DecodeResponse(res json.RawMessage) XRPLResponse {
 	ret := &NorippleCheckResponse{}
 	json.Unmarshal(res, ret)
+	for _, msg := range ret.TxJson {
+		ret.Transactions = append(ret.Transactions, ParseTx(msg))
+	}
 	return ret
 }
 
 type NorippleCheckResponse struct {
-	LedgerCurrentIndex uint64   `json:"ledger_current_index"`
-	Problems           []string `json:"problems"`
-	Transactions       []Tx     `json:"transactions"`
+	LedgerCurrentIndex uint64            `json:"ledger_current_index"`
+	Problems           []string          `json:"problems"`
+	TxJson             []json.RawMessage `json:"transactions"`
+	Transactions       []Tx
 }
