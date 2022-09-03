@@ -2,7 +2,7 @@ package xrpl
 
 import (
 	"github.com/CreatureDev/xrpl-go/internal/http"
-	"github.com/CreatureDev/xrpl-go/pkg/types"
+	"github.com/CreatureDev/xrpl-go/pkg/api"
 )
 
 type Connection struct {
@@ -29,7 +29,7 @@ func (c *Connection) EnableValidation() {
 
 // Submit is a generic function to pass requests to connected XRPL Node
 // Response will be in the format associated with request parameters
-func (c *Connection) Submit(p types.XRPLParams) (types.XRPLResponse, error) {
+func (c *Connection) Submit(p api.XRPLParams) (api.XRPLResponse, error) {
 	if !c.disableValidation {
 		if err := p.Validate(); err != nil {
 			return nil, err

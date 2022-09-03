@@ -1,4 +1,4 @@
-package types
+package api
 
 import (
 	"encoding/json"
@@ -19,7 +19,7 @@ const (
 	norippleCheckReq            = "noripple_check"
 )
 
-type Account string
+type Account Base58
 
 // TODO Validate account string format
 func (a Account) Validate() error {

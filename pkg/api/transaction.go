@@ -1,10 +1,11 @@
-package types
+package api
 
 import "encoding/json"
 
 const (
 	submitTxReq          string = "submit"
-	submitMultisignedReq string = "submit_multisigned"
+	submitMultisignedReq        = "submit_multisigned"
+	transactionEntryReq         = "transaction_entry"
 	txReq                       = "tx"
 )
 
@@ -102,6 +103,35 @@ type SubmitMultisignedResponse struct {
 	TxBlob              string          `json:"tx_blob"`
 	TxJson              json.RawMessage `json:"tx_json"`
 	Tx                  Tx
+}
+
+type TransactionEntryParams struct {
+	LedgerHash  string      `json:"ledger_hash,omitempty"`
+	LedgerIndex interface{} `json:"ledger_index,omitempty"`
+	TxHash      string      `json:"tx_hash"`
+}
+
+func (*TransactionEntryParams) Validate() error {
+	return nil
+}
+
+func (*TransactionEntryParams) MethodString() string {
+	return transactionEntryReq
+}
+
+func (*TransactionEntryParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	ret := &TransactionEntryResponse{}
+	json.Unmarshal(res, ret)
+	ret.Tx = ParseTx(ret.TxJson)
+	return ret
+}
+
+type TransactionEntryResponse struct {
+	LedgerIndex uint64          `json:"ledger_index"`
+	LedgerHash  string          `json:"ledger_hash"`
+	Metadata    TransactionMeta `json:"metadata"`
+	TxJson      json.RawMessage `json:"tx_json"`
+	Tx          Tx
 }
 
 type TxParams struct {

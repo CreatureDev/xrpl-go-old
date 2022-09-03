@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/CreatureDev/xrpl-go"
-	"github.com/CreatureDev/xrpl-go/pkg/types"
+	"github.com/CreatureDev/xrpl-go/pkg/api"
 )
 
 func main() {
 	conn := xrpl.CreateConnection("https://s.altnet.rippletest.net:51234")
-	accInfo := types.AccountInfoParams{BaseAccountParams: types.BaseAccountParams{Account: "rGioZYzQmjShBPrtEnktJzzjSBqXZdJvxf"}}
+	accInfo := api.AccountInfoParams{BaseAccountParams: api.BaseAccountParams{Account: "rGioZYzQmjShBPrtEnktJzzjSBqXZdJvxf"}}
 	resp, _ := conn.Submit(&accInfo)
 	fmt.Printf("%+v\n", resp)
 }

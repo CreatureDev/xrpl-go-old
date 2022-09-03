@@ -1,7 +1,7 @@
 package xrpl
 
-import "github.com/CreatureDev/xrpl-go/pkg/types"
+import "github.com/CreatureDev/xrpl-go/pkg/api"
 
 type Client interface {
-	Request(string, types.XRPLParams) (types.XRPLResponse, error)
+	Request(string, api.XRPLParams) (api.XRPLResponse, error)
 }

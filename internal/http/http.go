@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/CreatureDev/xrpl-go/pkg/types"
+	"github.com/CreatureDev/xrpl-go/pkg/api"
 )
 
 type Client struct {
@@ -14,14 +14,14 @@ type Client struct {
 }
 
 type httpRequest struct {
-	Method string             `json:"method"`
-	Params []types.XRPLParams `json:"params"`
+	Method string           `json:"method"`
+	Params []api.XRPLParams `json:"params"`
 }
 
-func (c *Client) Request(method string, args types.XRPLParams) (types.XRPLResponse, error) {
+func (c *Client) Request(method string, args api.XRPLParams) (api.XRPLResponse, error) {
 	req := httpRequest{
 		Method: method,
-		Params: []types.XRPLParams{args},
+		Params: []api.XRPLParams{args},
 	}
 	body, _ := json.Marshal(req)
 	resp, err := http.Post(c.Address, "application/json", bytes.NewBuffer(body))
@@ -36,7 +36,7 @@ func (c *Client) Request(method string, args types.XRPLParams) (types.XRPLRespon
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf(resp.Status)
 	}
-	var xrpErr types.Error
+	var xrpErr api.Error
 	res := &httpResponse{}
 	json.Unmarshal(dat, res)
 
