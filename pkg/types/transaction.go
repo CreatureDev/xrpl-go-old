@@ -3,8 +3,9 @@ package types
 import "encoding/json"
 
 const (
-	submitTxReq string = "submit"
-	txReq              = "tx"
+	submitTxReq          string = "submit"
+	submitMultisignedReq string = "submit_multisigned"
+	txReq                       = "tx"
 )
 
 type BaseTx struct {
@@ -51,11 +52,10 @@ func (*SubmitTxParams) MethodString() string {
 }
 
 func (*SubmitTxParams) DecodeResponse(res json.RawMessage) XRPLResponse {
-	// TODO determine type of transaction and return appropriate data
 	ret := &SubmitTxResponse{}
 	json.Unmarshal(res, ret)
 	ret.Tx = ParseTx(ret.TxJson)
-	return &SubmitTxResponse{}
+	return &ret
 }
 
 type SubmitTxResponse struct {
@@ -73,6 +73,35 @@ type SubmitTxResponse struct {
 	Kept                     bool   `json:"kept"`
 	OpenLedgerCost           string `json:"open_ledger_cost"`
 	ValidatedLedgerIndex     uint64 `json:"validated_ledger_index"`
+}
+
+type SubmitMultisignedParams struct {
+	Tx       Tx   `json:"tx_json"`
+	FailHard bool `json:"fail_hard,omitempty"`
+}
+
+func (*SubmitMultisignedParams) Validate() error {
+	return nil
+}
+
+func (*SubmitMultisignedParams) MethodString() string {
+	return submitMultisignedReq
+}
+
+func (*SubmitMultisignedParams) DecodeResponse(res json.RawMessage) XRPLResponse {
+	ret := &SubmitMultisignedResponse{}
+	json.Unmarshal(res, ret)
+	ret.Tx = ParseTx(ret.TxJson)
+	return ret
+}
+
+type SubmitMultisignedResponse struct {
+	EngineResult        string          `json:"engine_result"`
+	EngineResultCode    int             `json:"engine_result_code"`
+	EngineResultMessage string          `json:"engine_result_message"`
+	TxBlob              string          `json:"tx_blob"`
+	TxJson              json.RawMessage `json:"tx_json"`
+	Tx                  Tx
 }
 
 type TxParams struct {
