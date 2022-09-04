@@ -9,3 +9,7 @@ Currently supports
      - Synchronous HTTP client
   - API
      - Account requests
+     - Transaction requests (WIP)
+  - Wallet (ed25519)
+     - Wallet generation
+     - Transaction signing
